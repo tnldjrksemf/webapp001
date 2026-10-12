@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>외출 준비물 체크</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Canvas Confetti Library for completion effect -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  
+  <!-- Google Font: Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Custom Styles & Animations -->
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    /* Bounce animation for checklist items on check */
+    @keyframes popIn {
+      0% { transform: scale(0.98); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    .card-pop {
+      animation: popIn 0.2s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="bg-amber-50/60 min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 text-gray-800">
+
+  <main class="w-full max-w-md bg-white rounded-3xl shadow-xl shadow-amber-900/5 p-6 sm:p-8 border border-amber-100 transition-all">
+    
+    <!-- Header Section -->
+    <header class="text-center mb-6">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-amber-100 text-amber-600 rounded-full mb-3 text-3xl shadow-inner">
+        🚶‍♂️
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">외출 준비물 체크</h1>
+      
+      <!-- 상단 타이틀 아래 이미지 삽입 부분 -->
+      <div class="mt-4 mb-3 overflow-hidden rounded-2xl shadow-md border border-amber-100">
+        <img src="photo.png" alt="외출 준비 풍경" class="w-full h-48 object-cover hover:scale-105 transition-transform duration-300">
+      </div>
+
+      <p class="text-sm text-gray-500 mt-1">잊은 물건이 없는지 하나씩 체크해 보세요!</p>
+    </header>
+
+    <!-- Progress Indicator Bar -->
+    <div class="mb-6 bg-gray-100 rounded-full h-3 overflow-hidden p-0.5">
+      <div id="progressBar" class="bg-amber-500 h-full rounded-full transition-all duration-300 w-0"></div>
+    </div>
+
+    <!-- Item Checklist Form -->
+    <div class="space-y-3 mb-6" id="checklist">
+      
+      <!-- 1. 휴대전화 -->
+      <label class="item-card flex items-center justify-between p-4 bg-gray-50 hover:bg-amber-50/40 rounded-2xl border-2 border-transparent cursor-pointer transition-all duration-200 select-none">
+        <div class="flex items-center space-x-3.5">
+          <span class="text-2xl">📱</span>
+          <span class="item-text font-medium text-gray-700 text-lg transition-all">휴대전화</span>
+        </div>
+        <input type="checkbox" class="item-checkbox w-6 h-6 text-amber-500 rounded-lg border-gray-300 focus:ring-amber-400 focus:ring-2 accent-amber-500 transition-transform cursor-pointer">
+      </label>
+
+      <!-- 2. 지갑 -->
+      <label class="item-card flex items-center justify-between p-4 bg-gray-50 hover:bg-amber-50/40 rounded-2xl border-2 border-transparent cursor-pointer transition-all duration-200 select-none">
+        <div class="flex items-center space-x-3.5">
+          <span class="text-2xl">👛</span>
+          <span class="item-text font-medium text-gray-700 text-lg transition-all">지갑</span>
+        </div>
+        <input type="checkbox" class="item-checkbox w-6 h-6 text-amber-500 rounded-lg border-gray-300 focus:ring-amber-400 focus:ring-2 accent-amber-500 transition-transform cursor-pointer">
+      </label>
+
+      <!-- 3. 물병 -->
+      <label class="item-card flex items-center justify-between p-4 bg-gray-50 hover:bg-amber-50/40 rounded-2xl border-2 border-transparent cursor-pointer transition-all duration-200 select-none">
+        <div class="flex items-center space-x-3.5">
+          <span class="text-2xl">🍾</span>
+          <span class="item-text font-medium text-gray-700 text-lg transition-all">물병</span>
+        </div>
+        <input type="checkbox" class="item-checkbox w-6 h-6 text-amber-500 rounded-lg border-gray-300 focus:ring-amber-400 focus:ring-2 accent-amber-500 transition-transform cursor-pointer">
+      </label>
+
+      <!-- 4. 우산 -->
+      <label class="item-card flex items-center justify-between p-4 bg-gray-50 hover:bg-amber-50/40 rounded-2xl border-2 border-transparent cursor-pointer transition-all duration-200 select-none">
+        <div class="flex items-center space-x-3.5">
+          <span class="text-2xl">☂️</span>
+          <span class="item-text font-medium text-gray-700 text-lg transition-all">우산</span>
+        </div>
+        <input type="checkbox" class="item-checkbox w-6 h-6 text-amber-500 rounded-lg border-gray-300 focus:ring-amber-400 focus:ring-2 accent-amber-500 transition-transform cursor-pointer">
+      </label>
+
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="space-y-2.5">
+      <button id="checkBtn" type="button" class="w-full py-4 bg-amber-500 hover:bg-amber-600 text-white font-bold text-lg rounded-2xl shadow-lg shadow-amber-500/25 active:scale-[0.98] transition-all duration-150 flex items-center justify-center space-x-2">
+        <span>✨ 준비 확인</span>
+      </button>
+      <button id="resetBtn" type="button" class="w-full py-2.5 bg-transparent hover:bg-gray-100 text-gray-400 hover:text-gray-600 font-medium text-sm rounded-xl transition-all duration-150">
+        전체 해제
+      </button>
+    </div>
+
+    <!-- Result Box Indicator -->
+    <div id="resultBox" class="mt-5 p-4 rounded-2xl hidden text-center transition-all duration-300">
+      <div id="resultIcon" class="text-3xl mb-1"></div>
+      <div id="resultTitle" class="font-bold text-lg mb-1"></div>
+      <div id="resultMessage" class="text-sm font-medium"></div>
+    </div>
+
+  </main>
+
+  <!-- Interactive JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const checkboxes = document.querySelectorAll('.item-checkbox');
+      const cards = document.querySelectorAll('.item-card');
+      const checkBtn = document.getElementById('checkBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      const progressBar = document.getElementById('progressBar');
+      const resultBox = document.getElementById('resultBox');
+      const resultIcon = document.getElementById('resultIcon');
+      const resultTitle = document.getElementById('resultTitle');
+      const resultMessage = document.getElementById('resultMessage');
+
+      // Update card style based on state
+      function updateCardState(index) {
+        const checkbox = checkboxes[index];
+        const card = cards[index];
+        const text = card.querySelector('.item-text');
+
+        if (checkbox.checked) {
+          card.classList.add('bg-amber-50', 'border-amber-400', 'card-pop');
+          card.classList.remove('bg-gray-50', 'border-transparent');
+          text.classList.add('line-through', 'text-amber-800/60');
+          text.classList.remove('text-gray-700');
+        } else {
+          card.classList.remove('bg-amber-50', 'border-amber-400', 'card-pop');
+          card.classList.add('bg-gray-50', 'border-transparent');
+          text.classList.remove('line-through', 'text-amber-800/60');
+          text.classList.add('text-gray-700');
+        }
+        updateProgressBar();
+      }
+
+      // Update Top Progress Bar
+      function updateProgressBar() {
+        const total = checkboxes.length;
+        const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+        const percentage = (checkedCount / total) * 100;
+        progressBar.style.width = `${percentage}%`;
+      }
+
+      // Event Listener for Checkbox changes
+      checkboxes.forEach((cb, idx) => {
+        cb.addEventListener('change', () => {
+          updateCardState(idx);
+          // Hide previous result when user edits checks
+          resultBox.classList.add('hidden');
+        });
+      });
+
+      // Handle '준비 확인' Button Click
+      checkBtn.addEventListener('click', () => {
+        const uncheckedItems = [];
+
+        checkboxes.forEach((cb) => {
+          if (!cb.checked) {
+            const card = cb.closest('.item-card');
+            const itemName = card.querySelector('.item-text').innerText;
+            uncheckedItems.push(itemName);
+          }
+        });
+
+        resultBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-800', 'bg-rose-50', 'border-rose-200', 'text-rose-800');
+
+        if (uncheckedItems.length === 0) {
+          // 🎉 SUCCESS: All checked!
+          resultBox.classList.add('bg-emerald-50', 'border', 'border-emerald-200', 'text-emerald-800', 'block');
+          resultIcon.textContent = '🎉';
+          resultTitle.textContent = '준비 완료!';
+          resultMessage.textContent = '모든 준비물이 챙겨졌습니다. 좋은 하루 보내세요!';
+
+          // Trigger Confetti Effect
+          if (typeof confetti === 'function') {
+            confetti({
+              particleCount: 80,
+              spread: 60,
+              origin: { y: 0.7 }
+            });
+          }
+        } else {
+          // ⚠️ INCOMPLETE: Some items remaining
+          resultBox.classList.add('bg-rose-50', 'border', 'border-rose-200', 'text-rose-800', 'block');
+          resultIcon.textContent = '🎒';
+          resultTitle.textContent = '아직 챙기지 않은 물건이 있어요!';
+          resultMessage.textContent = `[ ${uncheckedItems.join(', ')} ] 항목을 챙겼는지 다시 한번 확인해 주세요.`;
+        }
+      });
+
+      // Reset All Checkboxes
+      resetBtn.addEventListener('click', () => {
+        checkboxes.forEach((cb, idx) => {
+          cb.checked = false;
+          updateCardState(idx);
+        });
+        resultBox.classList.add('hidden');
+      });
+    });
+  </script>
+</body>
+</html>
